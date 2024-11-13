@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý sinh viên</title>
+    <link
+      href="{{ url_for('static', filename='css/tailwind.css') }}"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    class="bg-gray-900 text-gray-200 min-h-screen flex items-center justify-center"
+  >
+    <div
+      class="container mx-auto p-6 rounded-lg shadow-lg bg-gray-800 w-full sm:w-3/4 md:w-2/3 lg:w-1/2"
+    >
+      <h1 class="text-3xl font-bold text-center mb-8">Quản lý sinh viên</h1>
+
+      {% if mode == 'register' %}
+      <!-- Form Đăng Ký -->
+      <div class="grid gap-6">
+        <h2 class="text-2xl font-semibold">Đăng Ký</h2>
+        <form
+          action="{{ url_for('register') }}"
+          method="POST"
+          class="grid gap-4"
+        >
+          <input
+            type="text"
+            name="username"
+            placeholder="Tên người dùng"
+            class="p-3 bg-gray-700 rounded text-gray-200"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Mật khẩu"
+            class="p-3 bg-gray-700 rounded text-gray-200"
+            required
+          />
+          <input
+            type="password"
+            name="confirm_password"
+            placeholder="Xác nhận mật khẩu"
+            class="p-3 bg-gray-700 rounded text-gray-200"
+            required
+          />
+          <button
+            type="submit"
+            class="w-full p-3 mt-4 bg-indigo-500 rounded hover:bg-indigo-600"
+          >
+            Đăng ký
+          </button>
+        </form>
+        <p class="text-center text-sm mt-4">
+          Đã có tài khoản?
+          <a
+            href="{{ url_for('index', mode='login') }}"
+            class="text-indigo-400 hover:underline"
+            >Đăng nhập</a
+          >
+        </p>
+      </div>
+
+      {% else %}
+      <!-- Form Đăng Nhập -->
+      <div class="grid gap-6">
+        <h2 class="text-2xl font-semibold">Đăng Nhập</h2>
+        <form action="{{ url_for('login') }}" method="POST" class="grid gap-4">
+          <input
+            type="text"
+            name="username"
+            placeholder="Tên người dùng"
+            class="p-3 bg-gray-700 rounded text-gray-200"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Mật khẩu"
+            class="p-3 bg-gray-700 rounded text-gray-200"
+            required
+          />
+          <button
+            type="submit"
+            class="w-full p-3 mt-4 bg-green-500 rounded hover:bg-green-600"
+          >
+            Đăng nhập
+          </button>
+        </form>
+        <p class="text-center text-sm mt-4">
+          Chưa có tài khoản?
+          <a
+            href="{{ url_for('index', mode='register') }}"
+            class="text-green-400 hover:underline"
+            >Đăng ký</a
+          >
+        </p>
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>

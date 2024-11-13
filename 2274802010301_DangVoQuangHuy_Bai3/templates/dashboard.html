@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý sinh viên</title>
+    <link
+      href="{{ url_for('static', filename='css/tailwind.css') }}"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-900 text-gray-200 min-h-screen">
+    <div class="container mx-auto p-6 bg-gray-800 rounded-lg shadow-lg m-10">
+      <h1 class="text-3xl font-black text-center mb-8 uppercase">
+        Danh sách sinh viên
+      </h1>
+      <div class="flex mb-6 gap-4 justify-center">
+        <a
+          href="{{ url_for('add_sinh_vien') }}"
+          class="text-white bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded"
+          >Thêm sinh viên mới</a
+        >
+        <a
+          href="{{ url_for('add_chuyen_nganh') }}"
+          class="text-white bg-green-500 hover:bg-green-600 py-2 px-4 rounded"
+          >Thêm chuyên ngành</a
+        >
+        <!-- Cập nhật nút -->
+        <div class="flex justify-end">
+          <button
+            id="updateButton"
+            onclick="updateSelected()"
+            class="text-white bg-yellow-500 hover:bg-yellow-600 py-2 px-4 rounded hidden"
+          >
+            Cập nhật đã chọn
+          </button>
+        </div>
+        <button
+          id="deleteButton"
+          onclick="deleteSelected()"
+          class="text-white bg-red-500 hover:bg-red-600 py-2 px-4 rounded hidden"
+        >
+          Xóa đã chọn
+        </button>
+      </div>
+
+      <table class="min-w-full bg-gray-800 border border-gray-600 rounded-lg">
+        <thead>
+          <tr class="bg-gray-700">
+            <th class="py-3 px-4 text-left">
+              <input
+                type="checkbox"
+                id="select-all"
+                onclick="toggleSelectAll()"
+              />
+            </th>
+            <th class="py-3 px-4 text-left">STT</th>
+            <th class="py-3 px-4 text-left">Tên</th>
+            <th class="py-3 px-4 text-left">Tuổi</th>
+            <th class="py-3 px-4 text-left">Giới tính</th>
+            <th class="py-3 px-4 text-left">Chuyên ngành</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sv in sinh_viens %}
+          <tr class="border-b border-gray-700">
+            <td class="py-3 px-4">
+              <input
+                type="checkbox"
+                class="select-item"
+                data-id="{{ sv.ID }}"
+                onclick="checkSelection()"
+              />
+            </td>
+            <td class="py-3 px-4">{{ loop.index }}</td>
+            <td class="py-3 px-4">{{ sv.Ten }}</td>
+            <td class="py-3 px-4">{{ sv.Tuoi }}</td>
+            <td class="py-3 px-4">{{ 'Nam' if sv.GioiTinh else 'Nữ' }}</td>
+            <td class="py-3 px-4">{{ sv.chuyen_nganh.TenChuyenNganh }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      function toggleSelectAll() {
+        const checkboxes = document.querySelectorAll(".select-item");
+        const selectAll = document.getElementById("select-all");
+        checkboxes.forEach((checkbox) => {
+          checkbox.checked = selectAll.checked;
+        });
+        checkSelection();
+      }
+
+      // Function to update selected students
+      function updateSelected() {
+        const selectedItems = document.querySelectorAll(".select-item:checked");
+        if (selectedItems.length === 0) {
+          alert("Chưa chọn sinh viên nào để cập nhật.");
+          return;
+        }
+
+        const idsToUpdate = Array.from(selectedItems).map((item) =>
+          item.getAttribute("data-id")
+        );
+        const confirmUpdate = confirm(
+          "Bạn có chắc chắn muốn cập nhật thông tin cho những sinh viên này?"
+        );
+
+        if (confirmUpdate) {
+          // Add your update logic here (for example, send a request to your backend)
+          window.location.href = "/update_sinh_vien/" + idsToUpdate[0];
+        }
+      }
+
+      function checkSelection() {
+        const selectedItems = document.querySelectorAll(".select-item:checked");
+        const deleteButton = document.getElementById("deleteButton");
+        const updateButton = document.getElementById("updateButton");
+
+        deleteButton.style.display =
+          selectedItems.length > 0 ? "inline-block" : "none";
+        updateButton.style.display =
+          selectedItems.length > 0 ? "inline-block" : "none";
+      }
+
+      function deleteSelected() {
+        const selectedItems = document.querySelectorAll(".select-item:checked");
+        if (selectedItems.length === 0) {
+          alert("Chưa chọn sinh viên nào để xóa.");
+          return;
+        }
+
+        const idsToDelete = Array.from(selectedItems).map((item) =>
+          item.getAttribute("data-id")
+        );
+        const confirmDelete = confirm(
+          "Bạn có chắc chắn muốn xóa những sinh viên này?"
+        );
+
+        if (confirmDelete) {
+          window.location.href = "/delete_sinh_vien/" + idsToDelete.join(",");
+        }
+      }
+    </script>
+  </body>
+</html>
